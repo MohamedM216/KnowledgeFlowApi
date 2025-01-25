@@ -1,0 +1,8 @@
+wwwroot/images/
+wwwroot/documents/
+bin/
+obj/
+thoughts.txt
+count-lines.ps1
+appsettings.json
+Migrations/

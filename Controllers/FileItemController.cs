@@ -1,0 +1,100 @@
+using KnowledgeFlowApi.Data;
+using KnowledgeFlowApi.DTOs;
+using KnowledgeFlowApi.Entities;
+using KnowledgeFlowApi.Models;
+using KnowledgeFlowApi.Services.FileItemServices;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace KnowledgeFlowApi.Controllers.FileItems
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    
+    // auth required
+    public class FileItemController : ControllerBase
+    {
+        private readonly FileService _fileService;
+        private readonly ILogger<FileItemController> _logger;
+        private readonly long maxAllowedImageSizeInMB = 5 * 1024 * 1024;
+        private readonly long maxAllowedFileSizeInMB = 100 * 1024 * 1024;
+
+        public FileItemController(FileService fileService, ILogger<FileItemController> logger) {
+            _fileService = fileService;
+            _logger = logger;
+        }
+
+        [HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> CreateFile([FromForm] FileUploadDto model) {
+            if (model == null)
+                return BadRequest("null or empty request");
+
+            if (model.CoverImage?.Length > maxAllowedImageSizeInMB) {
+                return BadRequest("max allowed image size is 5 MB");
+            }
+            if (model.File?.Length > maxAllowedFileSizeInMB) {
+                return BadRequest("max allowed file size is 100 MB");
+            }
+
+            try {
+                var response = await _fileService.UploadFileItemAsync(model);
+                if (response.IsValid)
+                    return Ok("new file created successfully");
+                return BadRequest(response.ErrorMessage);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> DeleteFile(int id)
+        {
+            try
+            {
+                var response = await _fileService.DeleteFileAsync(id);
+                if (response)
+                    return Ok("File removed successfully");
+                return BadRequest("File not found");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("get/{id}")]
+        public async Task<IActionResult> GetFile(int id) {
+            var response = await _fileService.GetFileItemAsyncByUserId(id);
+            if (response.IsValid)
+                return Ok(response);
+            return NotFound("file not found");
+        }
+
+        [HttpGet]
+        [Route("get-all-for-one-user/{userId}")]
+        public async Task<IActionResult> GetAllFilesByUserId(int userId) {
+            var response = await _fileService.GetAllFileItemsAsyncByUserId(userId);
+            if (response != null)
+                return Ok(response);
+            return NotFound("empty, no files uploaded yet");
+        }
+
+        [HttpGet]
+        [Route("get-all/")]
+        public async Task<IActionResult> GetAllFiles() {
+            var response = await _fileService.GetAllFileItemsAsync();
+            if (response != null)
+                return Ok(response);
+            return NotFound("empty, no files uploaded yet");
+        }
+
+    }
+}

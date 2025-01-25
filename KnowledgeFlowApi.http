@@ -1,0 +1,6 @@
+@KnowledgeFlowApi_HostAddress = http://localhost:5186
+
+GET {{KnowledgeFlowApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
