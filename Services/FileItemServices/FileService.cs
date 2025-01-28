@@ -135,6 +135,19 @@ namespace KnowledgeFlowApi.Services.FileItemServices
             return files.Select(MapToFileResponseDto);
         }
 
+        public async Task<IEnumerable<FileResponseDto>> SearchFilesByNameAsync(string word) {
+            var files = _context.FileItems.Where(f => f.Title.Contains(word)).ToList();
+            return files == null ? null : files.Select(MapToFileResponseDto);
+        }
+        public async Task<IEnumerable<FileResponseDto>> OrderByTimeAsync() {
+            var files = _context.FileItems.OrderByDescending(f => f.UploadedOn);
+            return files == null ? null : files.Select(MapToFileResponseDto);
+        }
+        public async Task<IEnumerable<FileResponseDto>> OrderByRatingAsync() {
+            var files = _context.FileItems.OrderByDescending(f => f.TotalRating);
+            return files == null ? null : files.Select(MapToFileResponseDto);
+        }
+
         private FileResponseDto MapToFileResponseDto(FileItem file)
         {
             return new FileResponseDto
@@ -149,6 +162,7 @@ namespace KnowledgeFlowApi.Services.FileItemServices
                 IsValid = true,
             };
         }
+
 
     }
 }

@@ -1,5 +1,7 @@
 
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace KnowledgeFlowApi.Entities
 {
     public class UserProfileImage
@@ -9,6 +11,7 @@ namespace KnowledgeFlowApi.Entities
         public string Path { get; set; }
         public long Size { get; set; }
         public DateTime UploadedOn { get; set; }  
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
     }

@@ -107,5 +107,24 @@ namespace KnowledgeFlowApi.Services.UserServices
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<GetUserProfileDto>> SearchUsersByNameAsync(string word) {
+            var users = _context.Users.Where(u => u.Username.Contains(word)).ToList();
+            return users == null ? null : users.Select(MapToUserProfileDto).ToList();
+        }
+        public async Task<IEnumerable<GetUserProfileDto>> OrderByRatingAsync() {
+            var users = _context.Users.OrderByDescending(u => u.TotalRating);
+            return users == null ? null : users.Select(MapToUserProfileDto).ToList();
+        }
+
+        private GetUserProfileDto MapToUserProfileDto(User user) {
+            return new GetUserProfileDto
+            {
+                Username = user.Username,
+                Bio = user?.Bio ?? "",
+                ContactEmail = user?.ContactEmail ?? "",
+                ProfileImagePath = user.UserProfileImage?.Path ?? "",
+            };
+        }
     }
 }

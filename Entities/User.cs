@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace KnowledgeFlowApi.Entities
 {
@@ -20,9 +21,42 @@ namespace KnowledgeFlowApi.Entities
         public string Password { get; set; }    // hashed password
         [Required]
         public DateTime MembershipDate { get; set; }
+        public decimal? TotalRating { get; set; }
         public UserProfileImage? UserProfileImage { get; set; }
         public ICollection<FileItem>? FileItems { get; set; }
-        // public ICollection<FileRating>? FileRatings { get; set; }
+        public ICollection<FileRating> FileRatings { get; set; }
+        public ICollection<UserRating> UserRatings { get; set; }
         public ICollection<UserRefreshToken>? UserRefreshTokens { get; set; }
+
+        // A user can rate multiple users
+        [JsonIgnore]
+        public ICollection<UserRating> GivenUserRatings { get; set; } = new List<UserRating>();
+        // A user can receive multiple ratings
+        public ICollection<UserRating> ReceivedUserRatings { get; set; } = new List<UserRating>();
     }
 }
+
+// user rating
+// rater- rated(user) - value - time
+// create rate
+// delete rate
+// update rate
+// read rate
+
+// book rating
+// rater- rated(book) - value - time - review
+// create rate
+// delete rate
+// update rate
+// read rate
+
+
+/*
+   rating   (user id- value - time)
+    /        \
+   /          \
+user-rating   book-rating
+   |              |
+user id         book id - review
+
+*/

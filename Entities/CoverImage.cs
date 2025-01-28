@@ -1,4 +1,6 @@
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace KnowledgeFlowApi.Entities
 {
     public class CoverImage
@@ -9,6 +11,7 @@ namespace KnowledgeFlowApi.Entities
         public long Size { get; set; }
         public DateTime UploadedOn { get; set; }  
         public FileItem FileItem { get; set; }
+        [ForeignKey("FileItem")]
         public int FileItemId { get; set; }
     }
 }

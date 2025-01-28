@@ -68,6 +68,25 @@ namespace KnowledgeFlowApi.Controllers.User
             return Ok("User account deleted successfully");
         }
 
+        [HttpGet("search-by-name/{word}")]
+        public async Task<IActionResult> SearchFilesByName(string word) {
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid Credentials");
+            var result = await _userProfileService.SearchUsersByNameAsync(word);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
+        }
+
+        [HttpGet("order-by-rating")]  // higher to lower
+        public async Task<IActionResult> OrderByRating() {
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid Credentials");
+            var result = await _userProfileService.OrderByRatingAsync();
+            if (result == null)
+                return NotFound();
+            return Ok(result);
+        }
         
     }
 }

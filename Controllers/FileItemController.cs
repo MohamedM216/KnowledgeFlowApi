@@ -12,6 +12,7 @@ namespace KnowledgeFlowApi.Controllers.FileItems
     [ApiController]
     [Route("api/[controller]")]
     
+    
     // auth required
     public class FileItemController : ControllerBase
     {
@@ -27,6 +28,7 @@ namespace KnowledgeFlowApi.Controllers.FileItems
 
         [HttpPost]
         [Route("create")]
+        [Authorize]
         public async Task<IActionResult> CreateFile([FromForm] FileUploadDto model) {
             if (model == null)
                 return BadRequest("null or empty request");
@@ -53,6 +55,7 @@ namespace KnowledgeFlowApi.Controllers.FileItems
 
         [HttpDelete]
         [Route("delete/{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteFile(int id)
         {
             try
@@ -94,6 +97,36 @@ namespace KnowledgeFlowApi.Controllers.FileItems
             if (response != null)
                 return Ok(response);
             return NotFound("empty, no files uploaded yet");
+        }
+
+        [HttpGet("search-by-name/{word}")]
+        public async Task<IActionResult> SearchFilesByName(string word) {
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid Credentials");
+            var result = await _fileService.SearchFilesByNameAsync(word);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
+        }
+
+        [HttpGet("order-by-time")]  // recent to last
+        public async Task<IActionResult> OrderByTime() {
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid Credentials");
+            var result = _fileService.OrderByTimeAsync();
+            if (result == null)
+                return NotFound();
+            return Ok(result);
+        }
+
+        [HttpGet("order-by-rating")]  // higher to lower
+        public async Task<IActionResult> OrderByRating() {
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid Credentials");
+            var result = _fileService.OrderByRatingAsync();
+            if (result == null)
+                return NotFound();
+            return Ok(result);
         }
 
     }

@@ -11,9 +11,10 @@ using Microsoft.IdentityModel.Tokens;
 
 /*
  *  TODOs:  
- *  testing
+ *  add comments feature
  *  
- *  permissions
+ *  likinga and disliking feature
+ *  add report feature
  *  
  *  
  *
@@ -48,6 +49,7 @@ builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<AuthUserService>();
 builder.Services.AddScoped<SendEmailService>();
 builder.Services.AddScoped<UserProfileService>();
+builder.Services.AddScoped<RatingService>();
 builder.Services.AddControllers();
 
 #endregion
