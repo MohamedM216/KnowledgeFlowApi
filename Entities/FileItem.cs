@@ -18,13 +18,13 @@ namespace KnowledgeFlowApi.Entities
         public decimal? TotalRating { get; set; }    
         [Required]
         public DateTime UploadedOn { get; set; }
-        public CoverImage? CoverImage { get; set; }
-        public ICollection<FileRating> FileRatings { get; set; }
         
         [ForeignKey("User")]
         public int UserId { get; set; }
+        public CoverImage? CoverImage { get; set; }
         public User User { get; set; }
-        // public ICollection<FileRating> FileRatings { get; set; }
+        public ICollection<FileRating> FileRatings { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
     }
 }

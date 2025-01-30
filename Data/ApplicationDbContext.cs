@@ -18,6 +18,7 @@ namespace KnowledgeFlowApi.Data
 
         public DbSet<FileRating> FileRatings { get; set; }
         public DbSet<UserRating> UserRatings { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,15 +52,15 @@ namespace KnowledgeFlowApi.Data
 
             // User-FileRating (One-to-Many)
             modelBuilder.Entity<FileRating>()
-                .HasOne(fr => fr.User)  // A rating belongs to a user
-                .WithMany(u => u.FileRatings) // A user can give multiple file ratings
+                .HasOne(fr => fr.User)  
+                .WithMany(u => u.FileRatings) 
                 .HasForeignKey(fr => fr.UserId)
-                .OnDelete(DeleteBehavior.NoAction); // Or DeleteBehavior.SetNull
+                .OnDelete(DeleteBehavior.NoAction);
 
             // FileItem-FileRating (One-to-Many)
             modelBuilder.Entity<FileRating>()
-                .HasOne(fr => fr.FileItem) // A rating is for a file
-                .WithMany(f => f.FileRatings) // A file can have multiple ratings
+                .HasOne(fr => fr.FileItem) 
+                .WithMany(f => f.FileRatings)
                 .HasForeignKey(fr => fr.FileItemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -67,13 +68,34 @@ namespace KnowledgeFlowApi.Data
                 .HasOne(ur => ur.User)
                 .WithMany(u => u.GivenUserRatings)
                 .HasForeignKey(ur => ur.UserId)
-                .OnDelete(DeleteBehavior.NoAction); // Change to NoAction
+                .OnDelete(DeleteBehavior.NoAction); 
 
             modelBuilder.Entity<UserRating>()
                 .HasOne(ur => ur.RatedUser)
                 .WithMany(u => u.ReceivedUserRatings)
                 .HasForeignKey(ur => ur.RatedUserId)
-                .OnDelete(DeleteBehavior.NoAction); // Change to NoAction
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // relationship between File and Comment
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.FileItem) 
+                .WithMany(f => f.Comments) 
+                .HasForeignKey(c => c.FileItemId) 
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // relationship between User and Comment
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.User) 
+                .WithMany(u => u.Comments) 
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent user deletion if they have comments
+
+            //  self-referencing relationship for Comment Replies
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.ParentComment) 
+                .WithMany(c => c.Replies) 
+                .HasForeignKey(c => c.ParentCommentId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deletion if there are replies
 
 
             modelBuilder.Entity<User>()

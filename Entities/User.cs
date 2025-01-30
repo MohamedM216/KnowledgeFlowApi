@@ -33,30 +33,7 @@ namespace KnowledgeFlowApi.Entities
         public ICollection<UserRating> GivenUserRatings { get; set; } = new List<UserRating>();
         // A user can receive multiple ratings
         public ICollection<UserRating> ReceivedUserRatings { get; set; } = new List<UserRating>();
+        public ICollection<Comment> Comments { get; set; }
     }
 }
 
-// user rating
-// rater- rated(user) - value - time
-// create rate
-// delete rate
-// update rate
-// read rate
-
-// book rating
-// rater- rated(book) - value - time - review
-// create rate
-// delete rate
-// update rate
-// read rate
-
-
-/*
-   rating   (user id- value - time)
-    /        \
-   /          \
-user-rating   book-rating
-   |              |
-user id         book id - review
-
-*/

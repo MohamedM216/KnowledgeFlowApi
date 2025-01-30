@@ -2,6 +2,7 @@ using System.Text;
 using KnowledgeFlowApi.Data;
 using KnowledgeFlowApi.Handlers;
 using KnowledgeFlowApi.Options;
+using KnowledgeFlowApi.Services.CommentServices;
 using KnowledgeFlowApi.Services.FileItemServices;
 using KnowledgeFlowApi.Services.UserServices;
 using LibraryManagementSystemAPI.Services.SendEmailServices;
@@ -11,7 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 
 /*
  *  TODOs:  
- *  add comments feature
+ *  complete comments feature:
+        testing
+        add update comment feature
+        merging with master branch
  *  
  *  likinga and disliking feature
  *  add report feature
@@ -44,13 +48,15 @@ builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email
 #endregion
 
 #region dependency injection
+builder.Services.AddControllers();
 builder.Services.AddSingleton<FileHandler>();
 builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<AuthUserService>();
 builder.Services.AddScoped<SendEmailService>();
 builder.Services.AddScoped<UserProfileService>();
+builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<RatingService>();
-builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 #endregion
 
@@ -103,6 +109,9 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.MapHub<CommentsHub>("/hubs/commentsHub");
+
 app.UseHttpsRedirection();
 
 app.Run();
