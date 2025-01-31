@@ -10,26 +10,16 @@ namespace KnowledgeFlowApi.Services.FileItemServices
     {
         private readonly ApplicationDbContext _context;
         private readonly FileHandler _fileHandler;
-        private readonly FileCompressionHandler _fileCompressionHandler;
+        
 
-        public FileService(ApplicationDbContext context, FileHandler fileHandler, FileCompressionHandler fileCompressionHandler)
+        public FileService(ApplicationDbContext context, FileHandler fileHandler)
         {
             _context = context;
             _fileHandler = fileHandler;
-            _fileCompressionHandler = fileCompressionHandler;
         }
 
         public async Task<FileResponseDto> UploadFileItemAsync(FileUploadDto fileUploadDto)
         {
-            // file processing
-            var validationResult = _fileHandler.ValidateFile(fileUploadDto.File, FileType.Document);
-            if (!validationResult.IsValid)
-                return new FileResponseDto { ErrorMessage = validationResult.ErrorMessage };
-
-            // if file size > 20 MB 
-            //      compress
-            
-            
             var fileProcessResult = await _fileHandler.SaveFileAsync(fileUploadDto.File, "documents", FileType.Document);
             if (!fileProcessResult.Success)
                 return new FileResponseDto { ErrorMessage = fileProcessResult.ErrorMessage };
