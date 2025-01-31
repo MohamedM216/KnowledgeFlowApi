@@ -12,15 +12,13 @@ using Microsoft.IdentityModel.Tokens;
 
 /*
  *  TODOs:  
- *  Implement virus scanning
- *  
- *  liking and disliking feature
  *  add report feature
  *  
  *  
  *
  *  future features:
- *  
+ *  Implement virus scanning
+ *  enable users to like or dislike a file
  *  update user password
 */
 

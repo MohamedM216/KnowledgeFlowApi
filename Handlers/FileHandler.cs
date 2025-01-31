@@ -9,6 +9,10 @@ public enum FileType
     Document
 }
 
+// file compression and virus scanning
+// src: https://chat.deepseek.com/a/chat/s/34b4f4d5-c09c-47a3-9cc0-660078c27716
+
+
 public class FileHandler
 {
     private readonly IWebHostEnvironment _environment;
@@ -63,6 +67,9 @@ public class FileHandler
                     IsValid = false, 
                     ErrorMessage = $"File size exceeds the limit of {sizeLimit / 1024 / 1024} MB" 
                 };
+
+            // ClamAV: An open-source antivirus engine.
+            
 
             return new FileValidationResult { IsValid = true };
         }
@@ -213,5 +220,5 @@ public class FileHandler
         return fileInfo.Length;
     }
 
-    
+
 }
