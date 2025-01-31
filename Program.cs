@@ -12,7 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 
 /*
  *  TODOs:  
- *  Consider implementing file compression
  *  Implement virus scanning
  *  
  *  liking and disliking feature

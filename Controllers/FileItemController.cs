@@ -28,7 +28,7 @@ namespace KnowledgeFlowApi.Controllers.FileItems
 
         [HttpPost]
         [Route("create")]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateFile([FromForm] FileUploadDto model) {
             if (model == null)
                 return BadRequest("null or empty request");
@@ -54,11 +54,34 @@ namespace KnowledgeFlowApi.Controllers.FileItems
         }
 
         [HttpGet("download/{fileId}")]
+        [Authorize]
         public async Task<IActionResult> DownloadFile(int fileId) {
             try
             {
                 var fileStreamResult = await _fileService.DownloadFile(fileId);
-                return fileStreamResult;
+                if (fileStreamResult == null)
+                    return NotFound();
+                return Ok(fileStreamResult);
+            }
+            catch (FileNotFoundException ex)
+            {
+                return NotFound(new FileResponseDto 
+                { 
+                    IsValid = false, 
+                    ErrorMessage = ex.Message 
+                });
+            }
+        }
+
+        [HttpGet("download/image/{fileId}")]
+        [Authorize]
+        public async Task<IActionResult> DownloadImage(int fileId) {
+            try
+            {
+                var fileStreamResult = await _fileService.DownloadFile(fileId, true);
+                if (fileStreamResult == null)
+                    return NotFound();
+                return Ok(fileStreamResult);
             }
             catch (FileNotFoundException ex)
             {

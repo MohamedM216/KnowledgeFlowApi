@@ -67,18 +67,24 @@ namespace KnowledgeFlowApi.Services.FileItemServices
             return new FileResponseDto { ErrorMessage = "An error happend while uploading the file or image" };
         }
 
-        public async Task<FileStreamResult> DownloadFile(int fileId) {
+        public async Task<FileStreamResult> DownloadFile(int fileId, bool isImage = false) {
             var file = await _context.Set<FileItem>()
                 .Include(f => f.CoverImage)
                 .FirstOrDefaultAsync(f => f.Id == fileId);
 
             if (file == null || !File.Exists(file.Path))
-                new FileResponseDto { ErrorMessage = "file not found" };
+                return null;
 
             var mimeType = "application/zip";
+            var filePath = file.Path;
 
-            // Stream the file to the client
-            var fileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read);
+            if (isImage)   {
+                if (file.CoverImage == null)
+                    return null;
+                filePath = file.CoverImage.Path;
+            }
+
+            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
             return new FileStreamResult(fileStream ,mimeType) {
                 FileDownloadName = file.Name,
