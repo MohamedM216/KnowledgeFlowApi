@@ -12,12 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 
 /*
  *  TODOs:  
- *  complete comments feature:
-        testing
-        add update comment feature
-        merging with master branch
+ *  Consider implementing file compression
+ *  Implement virus scanning
  *  
- *  likinga and disliking feature
+ *  liking and disliking feature
  *  add report feature
  *  
  *  
@@ -25,8 +23,6 @@ using Microsoft.IdentityModel.Tokens;
  *  future features:
  *  
  *  update user password
- *  Implement virus scanning
- *  Consider implementing file compression
 */
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +46,7 @@ builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email
 #region dependency injection
 builder.Services.AddControllers();
 builder.Services.AddSingleton<FileHandler>();
+builder.Services.AddSingleton<FileCompressionHandler>();
 builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<AuthUserService>();
 builder.Services.AddScoped<SendEmailService>();
