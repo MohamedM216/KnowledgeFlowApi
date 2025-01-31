@@ -28,7 +28,7 @@ namespace KnowledgeFlowApi.Controllers.FileItems
 
         [HttpPost]
         [Route("create")]
-        [Authorize]
+        // [Authorize]
         public async Task<IActionResult> CreateFile([FromForm] FileUploadDto model) {
             if (model == null)
                 return BadRequest("null or empty request");
@@ -37,7 +37,7 @@ namespace KnowledgeFlowApi.Controllers.FileItems
                 return BadRequest("max allowed image size is 5 MB");
             }
             if (model.File?.Length > maxAllowedFileSizeInMB) {
-                return BadRequest("max allowed file size is 100 MB");
+                return BadRequest("max allowed file size is 1 GB");
             }
 
             try {
@@ -50,6 +50,23 @@ namespace KnowledgeFlowApi.Controllers.FileItems
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("download/{fileId}")]
+        public async Task<IActionResult> DownloadFile(int fileId) {
+            try
+            {
+                var fileStreamResult = await _fileService.DownloadFile(fileId);
+                return fileStreamResult;
+            }
+            catch (FileNotFoundException ex)
+            {
+                return NotFound(new FileResponseDto 
+                { 
+                    IsValid = false, 
+                    ErrorMessage = ex.Message 
+                });
             }
         }
 
@@ -75,7 +92,7 @@ namespace KnowledgeFlowApi.Controllers.FileItems
         [HttpGet]
         [Route("get/{id}")]
         public async Task<IActionResult> GetFile(int id) {
-            var response = await _fileService.GetFileItemAsyncByUserId(id);
+            var response = await _fileService.GetFileItemAsyncByFileId(id);
             if (response.IsValid)
                 return Ok(response);
             return NotFound("file not found");

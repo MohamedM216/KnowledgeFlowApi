@@ -1,4 +1,6 @@
 // Helpers/FileHandler.cs
+using System.IO.Compression;
+
 namespace KnowledgeFlowApi.Handlers;
 
 public enum FileType
@@ -22,8 +24,8 @@ public class FileHandler
     // File size limits (in bytes)
     private readonly Dictionary<FileType, long> _fileSizeLimits = new()
     {
-        { FileType.Image, 5 * 1024 * 1024 },     // 5MB for images
-        { FileType.Document, 100 * 1024 * 1024 }   // 100MB for documents
+        { FileType.Image, 5 * 1024 * 1024 },     // 5 MB for images
+        { FileType.Document, 1024 * 1024 * 1024 }   // 1 GB for documents
     };
 
     public FileHandler(IWebHostEnvironment environment, ILogger<FileHandler> logger)
@@ -105,19 +107,28 @@ public class FileHandler
             var filePath = Path.Combine(subDirectory, fileName);
             var fullPath = Path.Combine(_environment.WebRootPath, filePath);
 
-            // Save file
-            using (var stream = new FileStream(fullPath, FileMode.Create))
+            // Compress the file into a zip archive
+            var zipFileName = $"{Path.GetFileNameWithoutExtension(fileName)}.zip";
+            var zipFilePath = Path.Combine(subDirectory, zipFileName);
+            var zipFullPath = Path.Combine(_environment.WebRootPath, zipFilePath);
+
+            using (var zipArchive = ZipFile.Open(zipFullPath, ZipArchiveMode.Create))
             {
-                await file.CopyToAsync(stream);
+                var entry = zipArchive.CreateEntry(fileName, CompressionLevel.Optimal);
+                using (var entryStream = entry.Open())
+                using (var fileStream = file.OpenReadStream())
+                {
+                    await fileStream.CopyToAsync(entryStream);
+                }
             }
 
             return new FileProcessResult
             {
                 Success = true,
-                FilePath = filePath.Replace("\\", "/"), // Normalize path separators
-                FileName = fileName,
-                FileSize = file.Length,
-                ContentType = file.ContentType
+                FilePath = zipFilePath.Replace("\\", "/"), 
+                FileName = zipFileName,
+                FileSize = new FileInfo(zipFullPath).Length,
+                ContentType = "application/zip"
             };
         }
         catch (Exception ex)
@@ -201,4 +212,6 @@ public class FileHandler
         var fileInfo = new FileInfo(fullPath);
         return fileInfo.Length;
     }
+
+    
 }

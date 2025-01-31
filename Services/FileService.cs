@@ -2,6 +2,7 @@ using KnowledgeFlowApi.Data;
 using KnowledgeFlowApi.DTOs;
 using KnowledgeFlowApi.Entities;
 using KnowledgeFlowApi.Handlers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KnowledgeFlowApi.Services.FileItemServices
@@ -23,11 +24,6 @@ namespace KnowledgeFlowApi.Services.FileItemServices
             var fileProcessResult = await _fileHandler.SaveFileAsync(fileUploadDto.File, "documents", FileType.Document);
             if (!fileProcessResult.Success)
                 return new FileResponseDto { ErrorMessage = fileProcessResult.ErrorMessage };
-            
-            // cover image processing
-            var ImagevalidationResult = _fileHandler.ValidateFile(fileUploadDto.CoverImage, FileType.Image);
-            if (!ImagevalidationResult.IsValid)
-                return new FileResponseDto { ErrorMessage = ImagevalidationResult.ErrorMessage };
             
             var ImageFileProcessResult = await _fileHandler.SaveFileAsync(fileUploadDto.CoverImage, "images/books", FileType.Image);
             if (!ImageFileProcessResult.Success)
@@ -71,13 +67,34 @@ namespace KnowledgeFlowApi.Services.FileItemServices
             return new FileResponseDto { ErrorMessage = "An error happend while uploading the file or image" };
         }
 
-        public async Task<FileResponseDto> GetFileItemAsyncByUserId(int fileId)
+        public async Task<FileStreamResult> DownloadFile(int fileId) {
+            var file = await _context.Set<FileItem>()
+                .Include(f => f.CoverImage)
+                .FirstOrDefaultAsync(f => f.Id == fileId);
+
+            if (file == null || !File.Exists(file.Path))
+                new FileResponseDto { ErrorMessage = "file not found" };
+
+            var mimeType = "application/zip";
+
+            // Stream the file to the client
+            var fileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read);
+
+            return new FileStreamResult(fileStream ,mimeType) {
+                FileDownloadName = file.Name,
+            };
+        }
+
+        public async Task<FileResponseDto> GetFileItemAsyncByFileId(int fileId)
         {
             var file = await _context.Set<FileItem>()
                 .Include(f => f.CoverImage)
                 .FirstOrDefaultAsync(f => f.Id == fileId);
 
-            return file == null ? new FileResponseDto { ErrorMessage = "file not found" } : MapToFileResponseDto(file);
+            if (file == null || !File.Exists(file.Path))
+                new FileResponseDto { ErrorMessage = "file not found" };
+
+            return MapToFileResponseDto(file);
         }
 
         public async Task<bool> DeleteFileAsync(int fileId)

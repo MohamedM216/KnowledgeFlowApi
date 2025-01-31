@@ -46,7 +46,6 @@ builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email
 #region dependency injection
 builder.Services.AddControllers();
 builder.Services.AddSingleton<FileHandler>();
-builder.Services.AddSingleton<FileCompressionHandler>();
 builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<AuthUserService>();
 builder.Services.AddScoped<SendEmailService>();
