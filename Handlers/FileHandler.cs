@@ -1,13 +1,8 @@
 // Helpers/FileHandler.cs
 using System.IO.Compression;
+using KnowledgeFlowApi.Enums;
 
 namespace KnowledgeFlowApi.Handlers;
-
-public enum FileType
-{
-    Image,
-    Document
-}
 
 // file compression and virus scanning
 // src: https://chat.deepseek.com/a/chat/s/34b4f4d5-c09c-47a3-9cc0-660078c27716

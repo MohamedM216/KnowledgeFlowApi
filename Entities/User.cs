@@ -22,6 +22,9 @@ namespace KnowledgeFlowApi.Entities
         [Required]
         public DateTime MembershipDate { get; set; }
         public decimal? TotalRating { get; set; }
+         public bool IsBanned { get; set; } // Indicates if the user is currently banned
+        
+
         public UserProfileImage? UserProfileImage { get; set; }
         public ICollection<FileItem>? FileItems { get; set; }
         public ICollection<FileRating> FileRatings { get; set; }
@@ -34,6 +37,12 @@ namespace KnowledgeFlowApi.Entities
         // A user can receive multiple ratings
         public ICollection<UserRating> ReceivedUserRatings { get; set; } = new List<UserRating>();
         public ICollection<Comment> Comments { get; set; }
+
+        public ICollection<Report> ReportsSubmitted { get; set; }
+        public ICollection<Report> ReportsAgainst { get; set; }
+        public ICollection<UserViolation> Violations { get; set; }
+        public ICollection<Ban> Bans { get; set; }
+        
     }
 }
 

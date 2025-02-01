@@ -25,6 +25,7 @@ namespace KnowledgeFlowApi.Entities
         public User User { get; set; }
         public ICollection<FileRating> FileRatings { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<Report> Reports { get; set; }
 
     }
 }
