@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace KnowledgeFlowApi.Services.UserServices
 {
-    public class AuthUserService(ApplicationDbContext dbContext, IOptions<JwtOptions> options)
+    public class AuthUserService(ApplicationDbContext dbContext, IOptions<JwtOptions> options, IConfiguration configuration)
     {   
         public const int MAX_REFRESH_TOKEN_LIFETIME_IN_DAYS = 7;
         private void MapSignUpRequest(SignUpRequest request, User user)
@@ -25,6 +25,7 @@ namespace KnowledgeFlowApi.Services.UserServices
             user.MembershipDate = DateTime.UtcNow;
             user.Bio = request.Bio;
             user.ContactEmail = request.ContactEmail;
+            user.Role = request.Role;
         }
 
         public async Task<ResponseAuthModel> SignUpAsync(SignUpRequest request) {
@@ -39,6 +40,9 @@ namespace KnowledgeFlowApi.Services.UserServices
             var existingUser = dbContext.Users.SingleOrDefault(u => u.Email == request.Email || u.Username == request.Username);
             if (existingUser != null)
                 return new ResponseAuthModel { Message = "this email or password is already used" };
+            
+            if (request.Role == Role.Admin && request.AdminKey != configuration["AdminLoginKey"])
+                return new ResponseAuthModel { Message = "you are not an admin" };
 
             var user = new User();
             using (var transaction = await dbContext.Database.BeginTransactionAsync()) {

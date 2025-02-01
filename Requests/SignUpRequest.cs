@@ -15,5 +15,7 @@ namespace KnowledgeFlowApi.Requests.UserRequests
         [Required]
         [MaxLength(20)]
         public string Password { get; set; }    // hashed password
+        public string Role { get; set; }
+        public string? AdminKey { get; set; }
     }
 }
