@@ -24,6 +24,8 @@ namespace KnowledgeFlowApi.Data
         public DbSet<UserViolation> UserViolations { get; set; }
         public DbSet<Ban> Bans { get; set; }
 
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // User - UserRefreshToken (One-to-Many)

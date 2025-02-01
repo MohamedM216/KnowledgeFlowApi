@@ -1,3 +1,4 @@
+using KnowledgeFlowApi.Attributes;
 using KnowledgeFlowApi.DTOs;
 using KnowledgeFlowApi.Services.CommentServices;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ namespace KnowledgeFlowApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [BannedUser]
     public class CommentController : ControllerBase
     {
         private readonly CommentService _commentService;
@@ -16,7 +18,8 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> CreateComment([FromBody] AddCommentDto request) {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -28,7 +31,8 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpPost("reply")]
-        [Authorize]
+        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> CreateReply([FromBody] AddCommentDto request) {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -52,7 +56,8 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        [Authorize]
+        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> GetCommentsByUserId(int userId, [FromQuery] int page = 1,
                                                         [FromQuery] int pageSize = 10)
         {
@@ -82,7 +87,8 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> DeleteComment(int id)
         {
             var result = await _commentService.DeleteByIdAsync(id);
@@ -95,7 +101,8 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> UpdateComment([FromBody] UpdateCommentDto updateCommentDto)
         {
             if (!ModelState.IsValid)

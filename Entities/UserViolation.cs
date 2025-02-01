@@ -8,7 +8,6 @@ namespace KnowledgeFlowApi.Entities
         public int UserId { get; set; }
         public ViolationType ViolationType { get; set; } // Enum: SexualContent, Other
         public DateTime ViolationDate { get; set; }
-        public ActionTaken ActionTaken { get; set; } // Enum: Warning, Ban, PermanentBan
         public User User { get; set; }
     }
 }

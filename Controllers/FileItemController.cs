@@ -1,3 +1,4 @@
+using KnowledgeFlowApi.Attributes;
 using KnowledgeFlowApi.Data;
 using KnowledgeFlowApi.DTOs;
 using KnowledgeFlowApi.Entities;
@@ -11,9 +12,8 @@ namespace KnowledgeFlowApi.Controllers.FileItems
 {
     [ApiController]
     [Route("api/[controller]")]
+    [BannedUser]
     
-    
-    // auth required
     public class FileItemController : ControllerBase
     {
         private readonly FileService _fileService;
@@ -28,7 +28,7 @@ namespace KnowledgeFlowApi.Controllers.FileItems
 
         [HttpPost]
         [Route("create")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> CreateFile([FromForm] FileUploadDto model) {
             if (model == null)
                 return BadRequest("null or empty request");
@@ -54,7 +54,8 @@ namespace KnowledgeFlowApi.Controllers.FileItems
         }
 
         [HttpGet("download/{fileId}")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> DownloadFile(int fileId) {
             try
             {
@@ -74,7 +75,8 @@ namespace KnowledgeFlowApi.Controllers.FileItems
         }
 
         [HttpGet("download/image/{fileId}")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> DownloadImage(int fileId) {
             try
             {
@@ -95,7 +97,8 @@ namespace KnowledgeFlowApi.Controllers.FileItems
 
         [HttpDelete]
         [Route("delete/{id}")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> DeleteFile(int id)
         {
             try

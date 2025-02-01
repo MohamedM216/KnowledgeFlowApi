@@ -6,7 +6,7 @@ namespace KnowledgeFlowApi.Entities
         public int UserId { get; set; }
         public DateTime BanStartDate { get; set; }
         public DateTime? BanEndDate { get; set; } // Nullable for permanent bans
-        public string Reason { get; set; }
+        public string AdminComment { get; set; }
 
         public User User { get; set; }
     }

@@ -56,8 +56,6 @@ namespace KnowledgeFlowApi.Services.UserServices
                 }
             }
 
-            // send confirmation email
-
             return new ResponseAuthModel 
             {
                 IsAuthenticated = true,
@@ -125,7 +123,7 @@ namespace KnowledgeFlowApi.Services.UserServices
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Email),
-                    new Claim(ClaimTypes.Role, "user"),
+                    new Claim(ClaimTypes.Role, user.Role),
                     new Claim("username", user.Username),
                     new Claim("email", user.Email),
                     new Claim("userId", user.Id.ToString())

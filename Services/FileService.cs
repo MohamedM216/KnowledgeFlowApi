@@ -1,6 +1,7 @@
 using KnowledgeFlowApi.Data;
 using KnowledgeFlowApi.DTOs;
 using KnowledgeFlowApi.Entities;
+using KnowledgeFlowApi.Enums;
 using KnowledgeFlowApi.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

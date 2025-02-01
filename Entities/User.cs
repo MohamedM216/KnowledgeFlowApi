@@ -13,6 +13,7 @@ namespace KnowledgeFlowApi.Entities
         public string Username { get; set; }
         [Required]
         public string Email { get; set; }
+        public string Role { get; set; }
         [MaxLength(10000)]
         public string? Bio { get; set; }
         public string? ContactEmail { get; set; }

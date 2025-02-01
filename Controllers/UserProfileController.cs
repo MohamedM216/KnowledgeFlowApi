@@ -1,3 +1,4 @@
+using KnowledgeFlowApi.Attributes;
 using KnowledgeFlowApi.DTOs;
 using KnowledgeFlowApi.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +7,7 @@ namespace KnowledgeFlowApi.Controllers.User
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [BannedUser]
     public class UserProfileController : ControllerBase
     {
         private readonly UserProfileService _userProfileService;
@@ -18,6 +19,7 @@ namespace KnowledgeFlowApi.Controllers.User
 
         [HttpPost]
         [Route("uploadProfileImage")]
+        [Authorize(Roles = Role.User)]
         public async Task<ActionResult> UploadProfileImage([FromForm]UploadUserProfileImageDto request) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid credentials");
@@ -34,6 +36,7 @@ namespace KnowledgeFlowApi.Controllers.User
 
         [HttpPut]   
         [Route("update")]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserProfileDto updateUserProfileDto)
         {
             if (!ModelState.IsValid)
@@ -50,6 +53,8 @@ namespace KnowledgeFlowApi.Controllers.User
 
         [HttpGet]
         [Route("get/{userId}")] 
+        [Authorize(Roles = Role.User)]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetUserProfile(int userId)
         {
             var userProfile = await _userProfileService.GetUserProfileAsync(userId);
@@ -60,6 +65,8 @@ namespace KnowledgeFlowApi.Controllers.User
 
         [HttpDelete]    
         [Route("delete/{userId}")]
+        [Authorize(Roles = Role.User)]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> DeleteUserAccount(int userId)
         {
             var response = await _userProfileService.DeleteUserAccountById(userId);

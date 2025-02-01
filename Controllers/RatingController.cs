@@ -1,3 +1,4 @@
+using KnowledgeFlowApi.Attributes;
 using KnowledgeFlowApi.DTOs;
 using KnowledgeFlowApi.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ namespace KnowledgeFlowApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [BannedUser]
     public class RatingController : ControllerBase
     {
         private readonly RatingService _ratingService;
@@ -16,7 +18,7 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpPost("rate-user")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> RateUser([FromBody] CreateRateDto request) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid Credentials");
@@ -28,7 +30,7 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpPost("rate-file")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> RateFile([FromBody] CreateRateDto request) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid Credentials");
@@ -41,7 +43,7 @@ namespace KnowledgeFlowApi.Controllers
 
 
         [HttpDelete("delete-user-rate")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> DeleteUserRate([FromBody] DeleteRateDto request) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid Credentials");
@@ -53,7 +55,7 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpDelete("delete-file-rate")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> DeleteFileRate([FromBody] DeleteRateDto request) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid Credentials");
@@ -87,7 +89,7 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpGet("get-users-user-rated/{userId}")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> GetGivenRatedUsers(int userId) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid Credentials");
@@ -99,7 +101,7 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpGet("get-files-user-rated/{userId}")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> GetGivenRatedFiles(int userId) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid Credentials");
@@ -111,7 +113,7 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpPut("update-user-rate")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> UpdateUserRate([FromBody] CreateRateDto request) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid Credentials");
@@ -123,7 +125,7 @@ namespace KnowledgeFlowApi.Controllers
         }
 
         [HttpPut("update-file-rate")]
-        [Authorize]
+        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> UpdateFileRate([FromBody] CreateRateDto request) {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid Credentials");

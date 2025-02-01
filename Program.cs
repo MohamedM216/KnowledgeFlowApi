@@ -1,4 +1,5 @@
 using System.Text;
+using KnowledgeFlowApi.Attributes;
 using KnowledgeFlowApi.Data;
 using KnowledgeFlowApi.Handlers;
 using KnowledgeFlowApi.Options;
@@ -12,9 +13,13 @@ using Microsoft.IdentityModel.Tokens;
 
 /*
  *  TODOs:  
- *  add report feature
- *  
- *  
+ *  notify admins using emails
+ *  db migration
+ *  testing
+ *  git push
+ *  README.md file
+ *  API doc using swagger
+ *  messaging Eng. hassan ibrahim
  *
  *  future features:
  *  Implement virus scanning
@@ -49,8 +54,15 @@ builder.Services.AddScoped<SendEmailService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<RatingService>();
+builder.Services.AddScoped<ReportService>();
 builder.Services.AddSignalR();
+#endregion
 
+#region Attributes
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<BannedUserAttribute>();
+});
 #endregion
 
 #region  Cors
