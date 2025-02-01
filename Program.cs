@@ -12,14 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 /*
- *  TODOs:  
- *  notify admins using emails
- *  db migration
- *  testing
- *  git push
- *  README.md file
- *  API doc using swagger
- *  messaging Eng. hassan ibrahim
  *
  *  future features:
  *  Implement virus scanning
