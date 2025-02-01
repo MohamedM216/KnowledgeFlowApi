@@ -66,8 +66,6 @@ namespace KnowledgeFlowApi.Controllers.User
 
         [HttpPost]
         [Route("refreshToken")]
-        [Authorize(Roles = Role.Admin)]
-        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> GetRefreshToken([FromBody]string token) {
             var refreshToken = Request.Cookies["userRefreshToken"] ?? token;
 
@@ -85,8 +83,6 @@ namespace KnowledgeFlowApi.Controllers.User
 
         [HttpPost]
         [Route("revokeToken")]
-        [Authorize(Roles = Role.Admin)]
-        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> RevokeToken([FromBody]string token) {
             var refreshToken = token ?? Request.Cookies["userRefreshToken"];
             if (string.IsNullOrEmpty(refreshToken))

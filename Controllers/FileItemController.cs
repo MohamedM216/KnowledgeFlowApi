@@ -98,7 +98,6 @@ namespace KnowledgeFlowApi.Controllers.FileItems
         [HttpDelete]
         [Route("delete/{id}")]
         [Authorize(Roles = Role.User)]
-        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> DeleteFile(int id)
         {
             try
