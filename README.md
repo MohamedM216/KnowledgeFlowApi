@@ -4,8 +4,6 @@ KnowledgeFlowApi is an ASP.NET Core Web API designed for file sharing and manage
 
 ---
 
-## **I will gradually start upgrading this project to a 3-layered architecture project. Stay tuned ...**
-
 ## Features
 
 - **File Management**:
